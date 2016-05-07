@@ -1,0 +1,26 @@
+#Describe
+   This is a simple dynamic allocator.
+
+#Block Format
+   -----------------
+   | Block Size|00a| <---Header
+   ----------------- <---malloc() return.
+   |               |
+   |   Payload     |
+   |               |
+   -----------------
+   |    [Fill]     |
+   -----------------
+   | Block Size|00a| <---Footer
+   -----------------
+
+ Note: Block Size= Header+Payload+[ Fill ]+Footer .
+
+#Strategies
+   *Idle clock organizatiion policy: Implicit Idle Link List
+   *Coalescing policy:	Immediate coalescing & Boundary tag
+   *Placement policy:  First fit
+   *Split policy: 
+
+#Date
+   2016-5-7 Rock.
