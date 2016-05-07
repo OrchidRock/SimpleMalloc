@@ -20,7 +20,46 @@
    *Idle clock organizatiion policy: Implicit Idle Link List
    *Coalescing policy:	Immediate coalescing & Boundary tag
    *Placement policy:  First fit
-   *Split policy: 
+   *Split policy:
+#Implicit Idle Link List format
+  #describe:
 
-#Date
-   2016-5-7 Rock.
+   	|**** | : represent a word(4 bytes)
+  	| a/b | : a is the size of block,b is the alloc field
+   			b=0,clock is free;b=1,clock is allocted.
+        ||    || :represent a clock
+ 
+  #format
+	 |<- Prologue->|               |<-Normal block->|                     |<-Epi->|
+   ------------------------------------------------------------------------------------
+   |**** || 8/1 | 8/1 ||hdr|.......|ftr||hdr|......|ftr|| ... ||hdr|......|fdr|| 0/1 ||
+   ------------------------------------------------------------------------------------
+   ^            ^
+padding     head_listp
+
+
+#test.c,mm.c
+If you want to output the debug infomation about IILL.You can add option -DDEBUG=value when
+you compile.
+	value=1: only print IILL after invokes mm_init.
+	value=2: only print IILL after invokes mm_malloc.
+	value=4: only print IILL after invokes mm_free.
+
+	of course,you can set value= 5 or 6 or 7.For example,
+	if value=5,print IILL after invokes mm_init or mm_free.
+		
+#Date	
+   2016-5-7 
+#Author
+   Rock CQU ChongQing China.
+   rocksevencolor@gmail.com (or 1058712592@qq.com)
+ 
+ Note: Most of codes of this project come from the book CSAPP.
+       thinks this book's author(Randal E.Bryant and 
+       David R.Hallaron),I have got so much from yours.
+
+thanks.
+
+
+
+
