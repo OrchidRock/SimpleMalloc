@@ -64,6 +64,10 @@ static void* coalesce(void* bp){
 		PUT(FTRP(NEXT_BLKP(bp)),PACK(size,0));
 		bp=PREV_BLKP(bp);
 	}
+#if DEBUG
+	debug("coalesce");
+#endif
+
 	return bp;
 }
 static void * extend_heap(size_t words){
@@ -80,6 +84,9 @@ static void * extend_heap(size_t words){
 	PUT(HDRP(NEXT_BLKP(bp)),PACK(0,1)); /* New epilogue header*/
 	
 	/* Coalesce if previous block is free */
+#if DEBUG
+    printf("--extend_heap--\n");
+#endif
 	return coalesce(bp);
 
 }
@@ -95,11 +102,13 @@ static void * find_fit(size_t size){
 			tmp_head_listp=NEXT_BLKP(tmp_head_listp);
 			continue; /* Skip alloc block*/
 		}
+
 		/* Find a free block*/
 		if(asize>=size){ /* Find a fit*/
 			return NEXT_BLKP(tmp_head_listp);
-		}
-		tmp_head_listp=NEXT_BLKP(tmp_head_listp);
+		}else{
+		    tmp_head_listp=NEXT_BLKP(tmp_head_listp);
+        }
 	}
 	return NULL;
 }
@@ -110,14 +119,14 @@ static void * find_fit(size_t size){
 static void place(void* bp,size_t size){
 	size_t asize=GET_SIZE(HDRP(bp));
 	
-	if(asize < size)
-		fprintf(stderr,"Error: place failed..");
-
-	PUT(HDRP(bp),PACK(size,1));
-	PUT(FTRP(bp),PACK(size,1));
-	
-	if(asize>size){ /* split*/
-		PUT(HDRP(NEXT_BLKP(bp)),PACK(asize-size,0));
+    if(asize - size < DSIZE){
+	    PUT(HDRP(bp),PACK(asize,1));
+	    PUT(FTRP(bp),PACK(asize,1));
+    }else{ /* split*/
+	    PUT(HDRP(bp),PACK(size,1));
+	    PUT(FTRP(bp),PACK(size,1));
+		
+        PUT(HDRP(NEXT_BLKP(bp)),PACK(asize-size,0));
 		PUT(FTRP(NEXT_BLKP(bp)),PACK(asize-size,0));
 	}
 		
@@ -131,7 +140,7 @@ void debug(char* message){
 	while((asize=GET_SIZE(HDRP(tmp_head_listp)))!=0){
 		alloc=GET_ALLOC(HDRP(tmp_head_listp));
 		printf("%p: ",tmp_head_listp);
-		printf("|%6d|%d|--PayLoad And Padding--|%6d|%d|--> \n",
+		printf("|%6ld|%ld|--PayLoad And Padding--|%6d|%d|--> \n",
 				asize,alloc,GET_SIZE(FTRP(tmp_head_listp)),
 				GET_ALLOC(FTRP(tmp_head_listp)));
 		tmp_head_listp=NEXT_BLKP(tmp_head_listp);

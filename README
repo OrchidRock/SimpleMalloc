@@ -49,11 +49,12 @@ you compile.
 	if value=5,print IILL after invokes mm_init or mm_free.
 		
 #Date	
-   2016-5-7 
+   2016-5-7
+   2020-3-1
+   2022-6-10 
 #Author
    Rock CQU ChongQing China.
-   rocksevencolor@gmail.com (or 1058712592@qq.com)
- 
+   
  Note: Most of codes of this project come from the book CSAPP.
        thinks this book's author(Randal E.Bryant and 
        David R.Hallaron),I have got so much from yours.
